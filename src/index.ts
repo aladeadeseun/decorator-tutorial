@@ -493,6 +493,14 @@ import "reflect-metadata";
 // const result2 = Math.multiply(2,2)
 // console.log(Math.multiply(2,2))
 
-import {main} from "./decorator/dependency-injection"
+//import {main} from "./decorator/dependency-injection"
 
-main.init()
+//main.init()
+
+//import { main } from "./exercise/clazz"
+
+//main()
+
+import {DecoratorMain} from "./exercise/decorator"
+
+DecoratorMain()
