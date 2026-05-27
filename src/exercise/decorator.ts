@@ -1,4 +1,4 @@
-import { GenericBaseClass } from "../type";
+import { GenericBaseClass, RoleType } from "../type";
 
 //CLASS DECORATORS
 //Exercise 3 — Create a Logger Decorator
@@ -87,6 +87,7 @@ function Measure(target: any, propKey: string, descriptor: PropertyDescriptor){
     return descriptor
 }
 
+//Exercise 7 — Build a Retry Decorator
 function Retry(retryTimes: number){
     //return promise back to caller
     return function(target: any, propKey: string, descriptor: PropertyDescriptor){
@@ -145,11 +146,33 @@ function Retry(retryTimes: number){
         return descriptor
     }//end decorator definition
 }//end function
+
+//Exercise 8 — Create a Role Guard Decorator
+function Role(role:RoleType[] | RoleType){
+    return function(target: any, propKey: string, descriptor: PropertyDescriptor){
+        const method = descriptor.value
+        descriptor.value = function(...args:any[]){
+            const currentUserrole = Reflect.getMetadata("role", this)
+            //defult access to false
+            let canAccess = false
+            if(Array.isArray(role)){
+                canAccess = (role.indexOf(currentUserrole) > -1)
+            }
+            else{
+                canAccess = role === currentUserrole
+            }
+            if(canAccess){
+                //console.log()
+                return method.apply(this, args)    
+            }
+            throw new Error(`Access denied: You are not permitted perform action.`)
+        }
+        return descriptor
+    }
+}
 /**
  * End METHOD DECORATORS
  */
-
-//Exercise 7 — Build a Retry Decorator
 
 @Logger
 class UserService {
@@ -196,6 +219,17 @@ class Config{
     constructor(public environment="development"){}
 }
 
+class User{
+    constructor(role: RoleType){
+        Reflect.defineMetadata("role", role, this)
+    }
+
+    @Role("admin")
+    deleteUser(){
+        
+    }
+}
+
 export async function DecoratorMain(){
     
     //const auth = new AuthService()
@@ -206,13 +240,17 @@ export async function DecoratorMain(){
     //config.environment = "production"
     // config.test = "Hello"
     //Config.prototype.me = function(){}
-    const user = new UserService("Akinsola")
+    //const user = new UserService("Akinsola")
     //console.log(user)
     //console.log(await user.getUsers())
-    console.log("-------------------------------------------------")
+    //console.log("-------------------------------------------------")
     //console.log()
-    console.log(await user.fetchPost())
-    console.log("------------I executed------")
+    //console.log(await user.fetchPost())
+    //console.log("------------I executed------")
+
+    const user = new User("guest")
+
+    user.deleteUser()
 }
 
 
