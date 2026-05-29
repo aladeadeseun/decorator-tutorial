@@ -1,9 +1,11 @@
 import { GenericBaseClass, RoleType } from "../type";
+import { test } from "./controller";
+import { Max, Min, Required, validate } from "./validator";
 
 //CLASS DECORATORS
 //Exercise 3 — Create a Logger Decorator
 function Logger<T extends GenericBaseClass>(ClassEntity: T): T{
-    console.log(`${ClassEntity.name} class created ad ${new Date().toDateString()}.`)
+    console.log(`${ClassEntity.name} class created at ${new Date().toDateString()}.`)
 
     return class AdvanceClass extends ClassEntity{
         
@@ -170,8 +172,33 @@ function Role(role:RoleType[] | RoleType){
         return descriptor
     }
 }
+
 /**
  * End METHOD DECORATORS
+ */
+
+/**
+ * PROPERTY DECORATORS
+ */
+
+//Exercise 9 — Required Fields
+//check validator.ts for implementation
+//Exercise 10 — Min/Max Length Validation
+
+/**
+ * End PROPERTY DECORATORS
+ */
+
+/**
+ * PARAMETER DECORATORS
+ */
+
+//Exercise 11 — Create
+function Body(target: Object, propertyKey: string | symbol, parameterIndex: number){
+    console.log(target, propertyKey, parameterIndex)
+}
+/**
+ * END PARAMETER DECORATORS
  */
 
 @Logger
@@ -226,12 +253,29 @@ class User{
 
     @Role("admin")
     deleteUser(){
-        
+        return new Promise((resolve: Function, reject: Function)=>{
+            setTimeout(()=>{
+                resolve({id:1,name:"Hello world"})
+            }, 100)
+        })
     }
+
+    //create(@Body body: any) {}
 }
 
+// class RequiredDto{
+//     @Min(4)
+//     @Max(20)
+//     @Required
+//     email!:string
+// }
+
+// class UserDto{
+//     @Required
+//     username!:string
+// }
+
 export async function DecoratorMain(){
-    
     //const auth = new AuthService()
     //console.log((auth as any).version)
     //console.log((auth as any).version, (auth as any).getInfo())
@@ -248,9 +292,22 @@ export async function DecoratorMain(){
     //console.log(await user.fetchPost())
     //console.log("------------I executed------")
 
-    const user = new User("guest")
+    //const user = new User("admin")
 
-    user.deleteUser()
+    //console.log(await user.deleteUser())
+    //console.log("-------------------------------------------------")
+    //const rdDto = new RequiredDto()
+    //rdDto.email = "Hello"
+    //console.log((rd as any).validate())
+    //validate(rd)
+    //console.log()
+    //console.log(validate(rdDto, true))
+
+    //const userDto = new UserDto()
+    //console.log(validate(userDto, true))
+    //const userController = new UserController()
+
+    test()
 }
 
 
